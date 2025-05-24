@@ -13,9 +13,14 @@ dotenv.config();
 const app: Express = express();
 
 // Middleware
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: [
+      "https://codesculptor.net",
+      "https://www.codesculptor.net",
+      process.env.FRONTEND_URL || "http://localhost:3000",
+    ],
     credentials: true,
   })
 );
