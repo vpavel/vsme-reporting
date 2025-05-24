@@ -1,0 +1,145 @@
+.header {
+  background-color: var(--primary-color-light);
+  color: var(--font-primary-color);
+  padding: 0.5rem var(--padding-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.logoLink {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+.logoLink:hover {
+  opacity: 0.8;
+}
+
+.logo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.search {
+  position: relative;
+  width: 20%;
+  display: flex;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--font-primary-color-lightest);
+  background-color: var(--font-primary-color-lightest);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
+}
+
+.searchInput::placeholder {
+  color: var(--primary-color);
+  opacity: 0.6;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.searchIcon:hover {
+  color: var(--font-primary-color);
+}
+
+/* User Menu */
+.userMenu {
+  position: relative;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s ease;
+}
+
+.userInfo:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.userName {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.profileIcon {
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.profileIcon:hover {
+  color: var(--primary-color);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid var(--font-primary-color-lightest);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.dropdownItem {
+  padding: 0.75rem 1rem;
+  color: var(--font-primary-color-light);
+  font-size: 0.875rem;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--font-primary-color-lightest);
+  margin: 0 1rem;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  color: var(--font-primary-color);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdownButton:hover {
+  background-color: #f9fafb;
+  color: var(--primary-color);
+}

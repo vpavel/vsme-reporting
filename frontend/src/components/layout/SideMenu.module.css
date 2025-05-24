@@ -1,0 +1,229 @@
+.sidebar {
+  width: 320px;
+  background: linear-gradient(to bottom, #f0fdf4, #f8fafc);
+  border-right: 1px solid var(--font-primary-color-lightest);
+  box-shadow: var(--shadow-md);
+  min-height: 100vh;
+}
+
+.header {
+  padding: 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-radius: 0 0 1rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.title {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.nav {
+  padding: 1rem;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.menuItem {
+  position: relative;
+  display: block;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease-in-out;
+  color: #374151;
+  text-decoration: none;
+  background-color: white;
+  border: 1px solid #f3f4f6;
+}
+
+.menuItem:hover {
+  background-color: #ecfdf5;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+  transform: scale(1.02);
+  border-color: #d1fae5;
+}
+
+.menuItem.active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transform: scale(1.05);
+  border-color: #059669;
+}
+
+.menuContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menuLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.iconContainer {
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  background-color: #f0fdf4;
+  transition: all 0.3s ease;
+  border: 1px solid #d1fae5;
+}
+
+.menuItem:hover .iconContainer {
+  background-color: #10b981;
+  color: white;
+  border-color: #059669;
+}
+
+.iconContainer.iconActive {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #059669;
+}
+
+.menuItem:hover .icon {
+  color: white;
+}
+
+.menuItem.active .icon {
+  color: white;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 500;
+  transition: color 0.3s ease;
+  color: #1f2937;
+}
+
+.description {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  transition: color 0.3s ease;
+  color: #6b7280;
+}
+
+.menuItem.active .label,
+.menuItem.active .description {
+  color: white;
+}
+
+.menuItem:hover .label {
+  color: #065f46;
+}
+
+.menuItem:hover .description {
+  color: #047857;
+}
+
+.arrow {
+  width: 1rem;
+  height: 1rem;
+  color: #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.menuItem:hover .arrow {
+  color: #10b981;
+  transform: translateX(0.25rem);
+}
+
+.arrow.arrowActive {
+  color: white;
+  transform: translateX(0.25rem);
+}
+
+.activeIndicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #fbbf24, #f59e0b);
+  border-radius: 0 4px 4px 0;
+}
+
+.hoverGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent);
+  border-radius: var(--border-radius);
+  pointer-events: none;
+}
+
+.progress {
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progressTitle {
+  color: #065f46;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.progressCount {
+  color: #059669;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: #d1fae5;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(to right, #10b981, #059669);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.progressText {
+  color: #047857;
+  font-size: 0.75rem;
+  margin: 0;
+}
