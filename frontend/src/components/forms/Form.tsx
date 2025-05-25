@@ -42,26 +42,17 @@ export default function Form({ title, subtitle, items, onSubmit, submitButtonTex
         <h1 className={styles.formTitle}>{title}</h1>
         {subtitle && <p className={styles.formSubtitle}>{subtitle}</p>}
       </div>
-
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.formItems}>
-          {items.map((item, index) => (
+          {items.map((item) => (
             <div key={item.id} className={styles.formItem}>
               <div className={styles.itemHeader}>
-                {item.indicator ? (
-                  <span className={styles.indicator}>
-                    {item.indicator}
-                    {item.required && <span className={styles.required}>*</span>}
-                  </span>
-                ) : (
-                  <span className={styles.questionNumber}>
-                    {index + 1}
-                    {item.required && <span className={styles.required}>*</span>}
-                  </span>
-                )}
-                <p className={styles.description}>{item.description}</p>
+                {item.indicator && <span className={styles.indicator}>{item.indicator}</span>}
+                <p className={styles.description}>
+                  {item.description}
+                  {item.required && <span className={styles.required}>*</span>}
+                </p>
               </div>
-
               <div className={styles.inputContainer}>
                 {item.multiline ? (
                   <textarea
@@ -90,7 +81,6 @@ export default function Form({ title, subtitle, items, onSubmit, submitButtonTex
             </div>
           ))}
         </div>
-
         <div className={styles.submitContainer}>
           <button type="submit" className={styles.submitButton}>
             {submitButtonText}
