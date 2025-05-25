@@ -51,6 +51,16 @@ export interface PermissionsAndRolesResponse {
   roles: Role[];
 }
 
+export interface ResetPasswordRequest {
+  userId: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordByEmailRequest {
+  email: string;
+  newPassword: string;
+}
+
 // Create axios instance with base configuration
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || "http://localhost:3001/api",
@@ -87,6 +97,23 @@ export const adminApi = {
   // Get available permissions and roles
   getPermissionsAndRoles: async (): Promise<PermissionsAndRolesResponse> => {
     const response = await api.get("/admin/permissions");
+    return response.data;
+  },
+  // Reset user password by ID
+  resetUserPassword: async (data: ResetPasswordRequest): Promise<{ message: string; user: User }> => {
+    const response = await api.put("/admin/users/reset-password", data);
+    return response.data;
+  },
+
+  // Reset user password by email
+  resetUserPasswordByEmail: async (data: ResetPasswordByEmailRequest): Promise<{ message: string; user: User }> => {
+    const response = await api.put("/admin/users/reset-password-by-email", data);
+    return response.data;
+  },
+
+  // Force password change on next login
+  forcePasswordChange: async (userId: string): Promise<{ message: string; user: User }> => {
+    const response = await api.put("/admin/users/force-password-change", { userId });
     return response.data;
   },
 };

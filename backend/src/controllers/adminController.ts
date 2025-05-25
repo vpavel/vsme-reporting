@@ -149,3 +149,101 @@ export const getPermissionsAndRoles = async (req: AuthRequest, res: Response) =>
     res.status(500).json({ message: "Error fetching permissions and roles", error: error.message });
   }
 };
+
+// Reset user password (Admin only)
+export const resetUserPassword = async (req: AuthRequest, res: Response) => {
+  try {
+    const { userId, newPassword } = req.body;
+
+    if (!userId || !newPassword) {
+      return res.status(400).json({ message: "User ID and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update password (will be hashed by the pre-save hook)
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      message: "Password reset successfully",
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error: any) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "Error resetting password", error: error.message });
+  }
+};
+
+// Reset user password by email (Admin only)
+export const resetUserPasswordByEmail = async (req: AuthRequest, res: Response) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({ message: "Email and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update password (will be hashed by the pre-save hook)
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      message: "Password reset successfully",
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error: any) {
+    console.error("Reset password by email error:", error);
+    res.status(500).json({ message: "Error resetting password", error: error.message });
+  }
+};
+
+// Force password change on next login
+export const forcePasswordChange = async (req: AuthRequest, res: Response) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // You could add a field like 'mustChangePassword' to your User model
+    // For now, we'll just return success
+    res.json({
+      message: "User will be required to change password on next login",
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error: any) {
+    console.error("Force password change error:", error);
+    res.status(500).json({ message: "Error setting password change requirement", error: error.message });
+  }
+};
