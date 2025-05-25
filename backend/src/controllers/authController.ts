@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import User from "../models/User";
+import { User } from "../models/User";
 import { generateToken } from "../utils/jwtUtils";
 import { AuthRequest, LoginCredentials, RegisterData, UserResponse } from "../types";
 
-export const register = async (req: Request<{}, {}, RegisterData>, res: Response): Promise<void> => {
+export const register = async (req: Request<object, object, RegisterData>, res: Response): Promise<void> => {
   try {
     const { email, password, name } = req.body;
 
@@ -30,6 +30,11 @@ export const register = async (req: Request<{}, {}, RegisterData>, res: Response
       id: user._id.toString(),
       name: user.name,
       email: user.email,
+      role: user.role,
+      permissions: user.permissions,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
 
     res.status(201).json({
@@ -43,7 +48,7 @@ export const register = async (req: Request<{}, {}, RegisterData>, res: Response
   }
 };
 
-export const login = async (req: Request<{}, {}, LoginCredentials>, res: Response): Promise<void> => {
+export const login = async (req: Request<object, object, LoginCredentials>, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
@@ -51,6 +56,12 @@ export const login = async (req: Request<{}, {}, LoginCredentials>, res: Respons
     const user = await User.findOne({ email });
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    // Check if user is active
+    if (!user.isActive) {
+      res.status(403).json({ message: "Account is deactivated. Please contact administrator." });
       return;
     }
 
@@ -68,6 +79,11 @@ export const login = async (req: Request<{}, {}, LoginCredentials>, res: Respons
       id: user._id.toString(),
       name: user.name,
       email: user.email,
+      role: user.role,
+      permissions: user.permissions,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
 
     res.json({
@@ -89,7 +105,6 @@ export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<v
     }
 
     const user = await User.findById(req.user.userId).select("-password");
-
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -99,6 +114,11 @@ export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<v
       id: user._id.toString(),
       name: user.name,
       email: user.email,
+      role: user.role,
+      permissions: user.permissions,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
 
     res.json({

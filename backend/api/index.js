@@ -9,13 +9,18 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 // Import routes
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
 // Load environment variables
 dotenv_1.default.config();
 // Initialize express app
 const app = (0, express_1.default)();
 // Middleware
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: [
+        "https://codesculptor.net",
+        "https://www.codesculptor.net",
+        process.env.FRONTEND_URL || "http://localhost:3000",
+    ],
     credentials: true,
 }));
 app.use(express_1.default.json());
@@ -26,6 +31,7 @@ mongoose_1.default
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("MongoDB connection error:", err));
 // Routes
+app.use("/api/admin", adminRoutes_1.default);
 app.use("/api/auth", authRoutes_1.default);
 // Health check route
 app.get("/api/health", (req, res) => {

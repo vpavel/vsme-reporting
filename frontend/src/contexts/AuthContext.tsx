@@ -1,18 +1,41 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+// Add the permission and role enums
+export enum Permission {
+  READ_USERS = "READ_USERS",
+  WRITE_USERS = "WRITE_USERS",
+  DELETE_USERS = "DELETE_USERS",
+  EDIT_CONTENT = "EDIT_CONTENT",
+  MANAGE_PERMISSIONS = "MANAGE_PERMISSIONS",
+  ADMIN_ACCESS = "ADMIN_ACCESS",
+}
+
+export enum Role {
+  USER = "user",
+  EDITOR = "editor",
+  ADMIN = "admin",
+}
+
+// Updated User interface
 interface User {
   id: string;
   name: string;
   email: string;
+  role: Role;
+  permissions: Permission[];
+  isActive: boolean;
 }
 
+// Updated AuthContextType
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  hasPermission: (permission: Permission) => boolean;
+  hasRole: (role: Role) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,7 +50,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       const token = localStorage.getItem("token");
-
       if (token) {
         try {
           const response = await fetch(`${API_URL}/auth/me`, {
@@ -35,7 +57,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-
           if (response.ok) {
             const data = await response.json();
             setUser(data.user);
@@ -47,10 +68,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.removeItem("token");
         }
       }
-
       setIsLoading(false);
     };
-
     checkAuthStatus();
   }, []);
 
@@ -63,14 +82,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
         body: JSON.stringify({ email, password }),
       });
-
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("token", data.token);
         setUser(data.user);
         return true;
       }
-
       return false;
     } catch (error) {
       console.error("Login failed:", error);
@@ -83,6 +100,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  // New permission checking functions
+  const hasPermission = (permission: Permission): boolean => {
+    if (!user) return false;
+    return user.permissions.includes(permission) || user.role === Role.ADMIN;
+  };
+
+  const hasRole = (role: Role): boolean => {
+    if (!user) return false;
+    return user.role === role || user.role === Role.ADMIN;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -91,6 +119,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         isAuthenticated: !!user,
         isLoading,
+        hasPermission,
+        hasRole,
       }}
     >
       {children}

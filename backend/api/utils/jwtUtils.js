@@ -9,6 +9,8 @@ const generateToken = (user) => {
     return jsonwebtoken_1.default.sign({
         userId: user._id,
         email: user.email,
+        role: user.role,
+        permissions: user.permissions,
     }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 exports.generateToken = generateToken;

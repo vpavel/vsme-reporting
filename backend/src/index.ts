@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 // Import routes
 import authRoutes from "./routes/authRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,7 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Routes
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 
 // Health check route

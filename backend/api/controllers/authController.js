@@ -1,22 +1,19 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCurrentUser = exports.login = exports.register = void 0;
-const User_1 = __importDefault(require("../models/User"));
+const User_1 = require("../models/User");
 const jwtUtils_1 = require("../utils/jwtUtils");
 const register = async (req, res) => {
     try {
         const { email, password, name } = req.body;
         // Check if user already exists
-        const existingUser = await User_1.default.findOne({ email });
+        const existingUser = await User_1.User.findOne({ email });
         if (existingUser) {
             res.status(400).json({ message: "User already exists" });
             return;
         }
         // Create new user
-        const user = new User_1.default({
+        const user = new User_1.User({
             email,
             password,
             name,
@@ -28,6 +25,11 @@ const register = async (req, res) => {
             id: user._id.toString(),
             name: user.name,
             email: user.email,
+            role: user.role,
+            permissions: user.permissions,
+            isActive: user.isActive,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         };
         res.status(201).json({
             message: "User created successfully",
@@ -45,9 +47,14 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         // Find user
-        const user = await User_1.default.findOne({ email });
+        const user = await User_1.User.findOne({ email });
         if (!user) {
             res.status(401).json({ message: "Invalid credentials" });
+            return;
+        }
+        // Check if user is active
+        if (!user.isActive) {
+            res.status(403).json({ message: "Account is deactivated. Please contact administrator." });
             return;
         }
         // Check password
@@ -62,6 +69,11 @@ const login = async (req, res) => {
             id: user._id.toString(),
             name: user.name,
             email: user.email,
+            role: user.role,
+            permissions: user.permissions,
+            isActive: user.isActive,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         };
         res.json({
             message: "Login successful",
@@ -81,7 +93,7 @@ const getCurrentUser = async (req, res) => {
             res.status(401).json({ message: "Not authenticated" });
             return;
         }
-        const user = await User_1.default.findById(req.user.userId).select("-password");
+        const user = await User_1.User.findById(req.user.userId).select("-password");
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
@@ -90,6 +102,11 @@ const getCurrentUser = async (req, res) => {
             id: user._id.toString(),
             name: user.name,
             email: user.email,
+            role: user.role,
+            permissions: user.permissions,
+            isActive: user.isActive,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         };
         res.json({
             user: userResponse,

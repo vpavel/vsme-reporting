@@ -36,29 +36,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const index_1 = require("../types/index");
 const userSchema = new mongoose_1.Schema({
-    email: {
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    role: {
         type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true,
+        enum: ["user", "editor", "admin"],
+        default: "user", // Default role for new users
     },
-    password: {
-        type: String,
-        required: true,
+    permissions: {
+        type: [String],
+        enum: ["READ_USERS", "WRITE_USERS", "DELETE_USERS", "EDIT_CONTENT", "MANAGE_PERMISSIONS", "ADMIN_ACCESS"],
+        default: [], // Default empty permissions for new users
     },
-    name: {
-        type: String,
-        required: true,
+    isActive: {
+        type: Boolean,
+        default: true, // Default active for new users
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
+}, { timestamps: true });
 // Hash password before saving
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password"))
@@ -72,9 +72,29 @@ userSchema.pre("save", async function (next) {
         next(error);
     }
 });
-// Method to compare passwords
+// Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcryptjs_1.default.compare(candidatePassword, this.password);
 };
-const User = mongoose_1.default.model("User", userSchema);
-exports.default = User;
+// Check if user has specific permission
+userSchema.methods.hasPermission = function (permission) {
+    return this.permissions.includes(permission) || this.role === index_1.Role.ADMIN;
+};
+// Set default permissions based on role
+userSchema.pre("save", function (next) {
+    if (this.isModified("role")) {
+        switch (this.role) {
+            case index_1.Role.ADMIN:
+                this.permissions = Object.values(index_1.Permission);
+                break;
+            case index_1.Role.EDITOR:
+                this.permissions = [index_1.Permission.EDIT_CONTENT, index_1.Permission.READ_USERS];
+                break;
+            case index_1.Role.USER:
+                this.permissions = [];
+                break;
+        }
+    }
+    next();
+});
+exports.User = mongoose_1.default.model("User", userSchema);
