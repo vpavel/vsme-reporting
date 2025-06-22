@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./SideMenu.module.css";
 import { FaInfoCircle, FaLeaf, FaUsers, FaShieldAlt, FaChevronRight } from "react-icons/fa";
+import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   {
@@ -35,6 +36,41 @@ const menuItems = [
 export default function SideMenu() {
   const pathname = usePathname();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const auth = useAuth();
+
+  const handleDownloadPDF = async () => {
+    if (!auth.user?.id) return;
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/pdf/general-info/${auth.user.id}?companyName=${encodeURIComponent(auth.user.name || "Your Company")}&reportingYear=${new Date().getFullYear()}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`, // If auth is needed
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
+
+      // Create blob and download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `VSME-Report-${new Date().getFullYear()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      // Show error message to user
+    }
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -93,6 +129,11 @@ export default function SideMenu() {
           <div className={styles.progressFill} style={{ width: "0%" }}></div>
         </div>
         <p className={styles.progressText}>Complete all sections to generate your report</p>
+      </div>
+      <div className={styles.buttonGenerate}>
+        <button onClick={handleDownloadPDF} className={styles.menuItem}>
+          Download PDF Report
+        </button>
       </div>
     </aside>
   );

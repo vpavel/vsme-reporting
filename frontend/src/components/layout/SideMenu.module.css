@@ -227,3 +227,8 @@
   font-size: 0.75rem;
   margin: 0;
 }
+
+.buttonGenerate {
+  display: flex;
+  justify-content: center;
+}
