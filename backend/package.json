@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "postbuild": "mkdir -p api && cp dist/index.js api/index.js",
+    "postbuild": "mkdir -p api && cp -r dist/* api/",
     "vercel-build": "npm run build",
     "dev": "nodemon --exec ts-node src/index.ts",
     "start": "node dist/index.js",
