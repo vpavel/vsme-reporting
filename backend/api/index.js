@@ -11,6 +11,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
 const generalInfoRoutes_1 = __importDefault(require("./routes/generalInfoRoutes"));
+const pdfRoutes_1 = __importDefault(require("./routes/pdfRoutes"));
 // Import error handling middleware
 const errorMiddleware_1 = require("./middleware/errorMiddleware");
 // Load environment variables
@@ -84,6 +85,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes_1.default);
 app.use("/api/admin", adminRoutes_1.default);
 app.use("/api/general-info", generalInfoRoutes_1.default);
+app.use("/api/pdf", pdfRoutes_1.default);
 // Root route for basic API info
 app.get("/", (req, res) => {
     res.json({
@@ -94,6 +96,7 @@ app.get("/", (req, res) => {
             auth: "/api/auth",
             admin: "/api/admin",
             generalInfo: "api/general-info",
+            pdf: "/api/pdf",
         },
     });
 });
